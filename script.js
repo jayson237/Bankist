@@ -1,9 +1,5 @@
 'use strict';
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
-
 // Data
 const account1 = {
   owner: 'Jonas Schmedtmann',
@@ -61,88 +57,60 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// Movement Container
+const displayMovements = function (movements) {
+  containerMovements.innerHTML = '';
+  movements.forEach(function (mov, i) {
+    const transactionType = mov > 0 ? 'deposit' : 'withdrawal';
+    const html = `
+      <div class="movements__row">
+        <div class="movements__type movements__type--${transactionType}">
+          ${i + 1} ${transactionType}
+        </div>
+        <div class="movements__value">${mov}€</div>
+      </div>
+    `;
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+displayMovements(account1.movements);
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-/*
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
+// Generating Usernames
+const generateUsername = function (accounts) {
+  accounts.forEach(account => {
+    account.username = account.owner
+      .toLowerCase()
+      .split(' ')
+      .map(x => x[0])
+      .reduce((x, y) => x + y);
+  });
+};
+generateUsername(accounts);
+console.log(accounts);
 
-currencies.forEach(function (val, key, map) {
-  console.log(`${key}: ${val}`);
-});
+// Display balance
+const balance = function (movements) {
+  const balance = movements.reduce((x, y) => x + y, 0);
+  labelBalance.textContent = `${balance}€`;
+};
+balance(account1.movements);
 
-// Set (does not have key)
-const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR', 'EUR']);
-console.log(currenciesUnique);
-currenciesUnique.forEach(function (val, _, set) {
-  console.log(`${_}: ${val}`);
-});
+// Display Summary
+const calcDisplaySummary = function (movements) {
+  const inc = movements.filter(mov => mov >= 0).reduce((x, y) => x + y, 0);
+  labelSumIn.textContent = `${inc}€`;
 
-/////////////////////////////////////////////////
+  const out = movements.filter(mov => mov < 0).reduce((x, y) => x + y, 0);
+  labelSumOut.textContent = `${Math.abs(out)}€`;
 
-let arr = ['a', 'b', 'c', 'd', 'e'];
-
-// Array Slice Method (to extract)
-// Does not mutate
-
-console.log(arr.slice(2));
-console.log(arr.slice(2, 4));
-console.log(arr.slice(-2, -1));
-console.log(arr.slice(-2));
-console.log(arr.slice());
-console.log(arr);
-
-// Splice Method (to remove)
-// Does mutate
-
-arr.splice(-1);
-arr.splice(2, 1); //the '1' here is the amount of numbers we want to delet from position 2
-console.log(arr);
-
-// Reverse
-// Does mutate
-
-arr = ['a', 'b', 'c', 'd', 'e'];
-const arr2 = ['j', 'i', 'h', 'g', 'f'];
-console.log(arr2.reverse());
-console.log(arr2);
-
-// Concat
-const letters = arr.concat(arr2);
-console.log(letters);
-
-// Join
-console.log(letters.join('-'));
-
-// At
-const arr3 = [23, 11, 64];
-console.log(arr3.at(0)); // arr3[0]
-console.log(arr3[arr3.length - 1]);
-console.log(arr3.slice(-1)[0]);
-console.log(arr3.at(-1));
-
-// forEach Method
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-for (const [i, move] of movements.entries()) {
-  const movement =
-    move > 0
-      ? `Movement ${i + 1}: Deposited ${move}`
-      : `Movement ${i + 1}: Withdrew ${Math.abs(move)}`;
-  console.log(movement);
-}
-console.log('-----------------------------------------');
-movements.forEach(function (move, i, arr) {
-  const movement =
-    move > 0
-      ? `Movement ${i + 1}: Deposited ${move}`
-      : `Movement ${i + 1}: Withdrew ${Math.abs(move)}`;
-  console.log(movement);
-});
-*/
+  const interest = movements
+    .filter(mov => mov >= 0)
+    .map(depo => (depo * 1.2) / 100)
+    .filter((int, i, arr) => {
+      console.log(arr);
+      return int >= 1;
+    })
+    .reduce((x, y) => x + y, 0);
+  labelSumInterest.textContent = `${interest}€`;
+};
+calcDisplaySummary(account1.movements);
