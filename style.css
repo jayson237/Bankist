@@ -17,17 +17,18 @@ html {
 
 body {
   font-family: 'Poppins', sans-serif;
-  color: #444;
-  background-color: #f3f3f3;
+  color: #8e8e8e;
+  background-color: #201e1e;
   height: 100vh;
   padding: 2rem;
 }
 
 nav {
+  max-width: 100rem;
+  margin: 4rem auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 2rem;
 }
 
 .welcome {
@@ -36,7 +37,7 @@ nav {
 }
 
 .logo {
-  height: 5.25rem;
+  height: 10rem;
 }
 
 .login {
@@ -80,7 +81,7 @@ nav {
 .btn--sort:hover,
 .btn--sort:focus {
   outline: none;
-  color: #777;
+  color: #201e1e;
 }
 
 /* MAIN */
@@ -94,7 +95,7 @@ nav {
   gap: 2rem;
 
   /* NOTE This creates the fade in/out anumation */
-  /* opacity: 0; */
+  opacity: 0;
   transition: all 1s;
 }
 
@@ -125,16 +126,17 @@ nav {
 /* MOVEMENTS */
 .movements {
   grid-row: 2 / span 3;
-  background-color: #fff;
+  background-color: #1a1919;
   border-radius: 1rem;
   overflow: scroll;
+  overflow-x: hidden;
 }
 
 .movements__row {
   padding: 2.25rem 4rem;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #201e1e;
 }
 
 .movements__type {

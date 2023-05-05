@@ -73,7 +73,6 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMovements(account1.movements);
 
 // Generating Usernames
 const generateUsername = function (accounts) {
@@ -89,23 +88,22 @@ generateUsername(accounts);
 console.log(accounts);
 
 // Display balance
-const balance = function (movements) {
+const displayBalance = function (movements) {
   const balance = movements.reduce((x, y) => x + y, 0);
   labelBalance.textContent = `${balance}€`;
 };
-balance(account1.movements);
 
 // Display Summary
-const calcDisplaySummary = function (movements) {
-  const inc = movements.filter(mov => mov >= 0).reduce((x, y) => x + y, 0);
+const calcDisplaySummary = function (acc) {
+  const inc = acc.movements.filter(mov => mov >= 0).reduce((x, y) => x + y, 0);
   labelSumIn.textContent = `${inc}€`;
 
-  const out = movements.filter(mov => mov < 0).reduce((x, y) => x + y, 0);
+  const out = acc.movements.filter(mov => mov < 0).reduce((x, y) => x + y, 0);
   labelSumOut.textContent = `${Math.abs(out)}€`;
 
-  const interest = movements
+  const interest = acc.movements
     .filter(mov => mov >= 0)
-    .map(depo => (depo * 1.2) / 100)
+    .map(depo => (depo * acc.interestRate) / 100)
     .filter((int, i, arr) => {
       console.log(arr);
       return int >= 1;
@@ -113,4 +111,32 @@ const calcDisplaySummary = function (movements) {
     .reduce((x, y) => x + y, 0);
   labelSumInterest.textContent = `${interest}€`;
 };
-calcDisplaySummary(account1.movements);
+
+// Event Handlers
+
+let currAccount;
+btnLogin.addEventListener('click', function (e) {
+  // Prevent from submitting
+  e.preventDefault();
+  currAccount = accounts.find(
+    acc => acc.username.trim() === inputLoginUsername.value
+  );
+
+  if (currAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back, ${
+      currAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+    // Clear input fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+    // Movements
+    displayMovements(currAccount.movements);
+    // Balance
+    displayBalance(currAccount.movements);
+    // Account Summary
+    calcDisplaySummary(currAccount);
+  } else {
+    alert('Please ensure that you have input the correct data');
+  }
+});
