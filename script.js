@@ -1,6 +1,6 @@
 'use strict';
 
-// Data
+// DATA
 const account1 = {
   owner: 'John Doe',
   movements: [
@@ -90,7 +90,7 @@ const accounts = [
   account10,
 ];
 
-// Elements
+// ELEMENTS
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
@@ -117,9 +117,10 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 // Movement Container
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
-  movements.forEach(function (mov, i) {
+  const movs = sort ? movements.slice().sort((x, y) => x - y) : movements;
+  movs.forEach(function (mov, i) {
     const transactionType = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
       <div class="movements__row">
@@ -180,8 +181,7 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
-// Event Handlers
-
+// EVENT HANDLERS
 let currAccount;
 btnLogin.addEventListener('click', function (e) {
   // Prevent from submitting
@@ -263,4 +263,12 @@ btnClose.addEventListener('click', function (e) {
   } else {
     alert('Please check if you have the correct credentials!');
   }
+});
+
+// Sort
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currAccount.movements, !sorted);
+  sorted = !sorted;
 });

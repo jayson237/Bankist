@@ -136,6 +136,34 @@ console.log(calcAverageHumanAge2(ages));
 
 // Data Transformations: map, filter, reduce
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+const account1 = {
+  owner: 'John Doe',
+  movements: [
+    1200, -600, 350, -800, 600, -1500, 200, 450, -400, 3000, -650, -130, 70,
+    1300,
+  ],
+  interestRate: 1.2,
+  pin: 1234,
+};
+
+const account2 = {
+  owner: 'Jane Smith',
+  movements: [
+    10000, -500, -1500, -790, 6000, -2000, 8500, -30, 5000, 3400, -150, -790,
+    -3210, -1000,
+  ],
+  interestRate: 1.5,
+  pin: 4321,
+};
+
+const account3 = {
+  owner: 'David Johnson',
+  movements: [200, 1000, -300, -50, -1000, 500, 300, 800],
+  interestRate: 1,
+  pin: 2468,
+};
+
+const accounts = [account1, account2, account3];
 
 // Map
 const eurToUsd = 1.1;
@@ -188,3 +216,62 @@ const anyDeposits = movements.some(mov => mov > 0);
 console.log(anyDeposits);
 
 console.log(movements.every(mov => mov > 0));
+
+// Seperate callback
+const deposit = mov => mov > 0;
+console.log(movements.some(deposit));
+console.log(movements.every(deposit));
+console.log(movements.filter(deposit));
+
+// flat and flatMap
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+console.log(arr.flat());
+const arr2 = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+console.log(arr2.flat(2));
+
+const overallBalance = accounts
+  .map(acc => acc.movements)
+  .flat()
+  .reduce((x, y) => x + y, 0);
+console.log(overallBalance);
+
+const balances = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((x, y) => x + y, 0);
+console.log(balances);
+
+// Sort
+// String
+const owners = ['Jonas', 'Jack', 'Adam', 'Martha'];
+console.log(owners.sort());
+
+// Numbers
+// console.log(movements.sort()); does not work
+movements.sort((a, b) => a - b);
+console.log(movements);
+
+// Creating and Filling Arrays
+const arrs = [1, 2, 3, 4, 5, 6, 7];
+console.log(new Array(1, 2, 3, 4, 5, 6, 7));
+
+// Empty arrays + fill method
+const x = new Array(7);
+console.log(x);
+
+x.fill(2, 3, 6);
+console.log(x);
+
+console.log(arrs.fill(23, 2, 5)); // will replace but cannot add
+
+// Array.from
+const y = Array.from({ length: 7 }, () => 1);
+console.log(y);
+
+const z = Array.from({ length: 7 }, (_, i) => i + 1);
+console.log(z);
+
+const movementsUI = Array.from(
+  document.querySelectorAll('.movements_value'),
+  el => Number(el.textContent.replace('€', ''))
+);
+console.log(movementsUI);
