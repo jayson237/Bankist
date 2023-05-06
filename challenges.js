@@ -171,6 +171,18 @@ console.log(withdrawal);
 const balance = movements.reduce((x, y) => x + y, 0);
 console.log(balance);
 
-// Find (return true or false for the first findings)
+// find and findIndex (return the element for the first findings)
 const firstWithdrawal = movements.find(mov => mov < 0);
 console.log(firstWithdrawal);
+
+const index = movements.findIndex(mov => mov < 0);
+console.log(index);
+
+// Some and every
+
+// EQUALITY
+console.log(movements.includes(-130));
+
+// CONDITION
+const anyDeposits = movements.some(mov => mov > 0);
+console.log(anyDeposits);

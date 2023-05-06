@@ -17,7 +17,7 @@ html {
 
 body {
   font-family: 'Poppins', sans-serif;
-  color: #8e8e8e;
+  color: #6b6b6b;
   background-color: #201e1e;
   height: 100vh;
   padding: 2rem;
@@ -37,7 +37,7 @@ nav {
 }
 
 .logo {
-  height: 10rem;
+  height: 5.25rem;
 }
 
 .login {
@@ -81,7 +81,7 @@ nav {
 .btn--sort:hover,
 .btn--sort:focus {
   outline: none;
-  color: #201e1e;
+  color: #fff;
 }
 
 /* MAIN */
@@ -207,6 +207,7 @@ nav {
   font-size: 1.3rem;
   font-weight: 500;
   cursor: pointer;
+  color: #6b6b6b;
 }
 
 /* OPERATIONS */
