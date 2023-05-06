@@ -187,7 +187,7 @@ btnLogin.addEventListener('click', function (e) {
   // Prevent from submitting
   e.preventDefault();
   currAccount = accounts.find(
-    acc => acc.username === inputLoginUsername.value.trim()
+    acc => acc.username === inputLoginUsername.value.toLowerCase().trim()
   );
 
   if (currAccount?.pin === Number(inputLoginPin.value)) {
