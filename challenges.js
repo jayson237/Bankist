@@ -178,7 +178,7 @@ console.log(firstWithdrawal);
 const index = movements.findIndex(mov => mov < 0);
 console.log(index);
 
-// Some and every
+// Some and every (returns true or false)
 
 // EQUALITY
 console.log(movements.includes(-130));
@@ -186,3 +186,5 @@ console.log(movements.includes(-130));
 // CONDITION
 const anyDeposits = movements.some(mov => mov > 0);
 console.log(anyDeposits);
+
+console.log(movements.every(mov => mov > 0));
