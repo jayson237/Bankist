@@ -4,8 +4,8 @@
 const account1 = {
   owner: 'John Doe',
   movements: [
-    1200, -600, 350, -800, 600, -1500, 200, 450, -400, 3000, -650, -130, 70,
-    1300,
+    1200.17, -600.22, 350, -800, 600, -1500, 200, 450, -400, 3000, -650, -130,
+    70.5, 1300,
   ],
   interestRate: 1.2,
   pin: 1234,
@@ -32,7 +32,7 @@ const account1 = {
 const account2 = {
   owner: 'Jane Smith',
   movements: [
-    10000, -500, -1500, -790, 6000, -2000, 8500, -30, 5000, 3400, -150, -790,
+    10000, -500, -1500, -790, 6000, -2000, 8500, -30.3, 5000, 3400, -150, -790,
     -3210, -1000,
   ],
   interestRate: 1.5,
@@ -59,7 +59,7 @@ const account2 = {
 
 const account3 = {
   owner: 'David Johnson',
-  movements: [200, 1000, -300, -50, -1000, 500, 300, 800],
+  movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
   interestRate: 1,
   pin: 2468,
   movementDates: [
@@ -77,7 +77,7 @@ const account3 = {
 };
 
 const account4 = {
-  owner: 'Lisa Williams',
+  owner: 'Udin Simatupang',
   movements: [-200, 800, -300, -20, 50, 400, -460, 200, -200, 340],
   interestRate: 0.7,
   pin: 1357,
@@ -93,8 +93,8 @@ const account4 = {
     '2022-03-13T20:20:13.605Z',
     '2022-03-19T03:58:30.301Z',
   ],
-  currency: 'USD',
-  locale: 'en-US',
+  currency: 'IDR',
+  locale: 'id-ID',
 };
 
 const account5 = {
@@ -156,7 +156,7 @@ const displayMovements = function (movements, sort = false) {
         <div class="movements__type movements__type--${transactionType}">
           ${i + 1} ${transactionType}
         </div>
-        <div class="movements__value">${mov}€</div>
+        <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>
     `;
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -179,16 +179,16 @@ console.log(accounts);
 // Display balance
 const displayBalance = function (acc) {
   acc.balance = acc.movements.reduce((x, y) => x + y, 0);
-  labelBalance.textContent = `${acc.balance}€`;
+  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
 };
 
 // Display Summary
 const calcDisplaySummary = function (acc) {
   const inc = acc.movements.filter(mov => mov >= 0).reduce((x, y) => x + y, 0);
-  labelSumIn.textContent = `${inc}€`;
+  labelSumIn.textContent = `${inc.toFixed(2)}€`;
 
   const out = acc.movements.filter(mov => mov < 0).reduce((x, y) => x + y, 0);
-  labelSumOut.textContent = `${Math.abs(out)}€`;
+  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
 
   const interest = acc.movements
     .filter(mov => mov >= 0)
@@ -198,7 +198,7 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((x, y) => x + y, 0);
-  labelSumInterest.textContent = `${Number(interest.toFixed(2))}€`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 };
 
 const updateUI = function (acc) {
@@ -219,7 +219,7 @@ btnLogin.addEventListener('click', function (e) {
     acc => acc.username === inputLoginUsername.value.toLowerCase().trim()
   );
 
-  if (currAccount?.pin === Number(inputLoginPin.value)) {
+  if (currAccount?.pin === +inputLoginPin.value) {
     labelWelcome.textContent = `Welcome back, ${
       currAccount.owner.split(' ')[0]
     }`;
@@ -237,7 +237,7 @@ btnLogin.addEventListener('click', function (e) {
 // Transfers
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
-  const amount = Number(inputTransferAmount.value);
+  const amount = +inputTransferAmount.value;
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value
   );
@@ -260,7 +260,7 @@ btnTransfer.addEventListener('click', function (e) {
 // Loan request
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
-  const amount = Number(inputLoanAmount.value);
+  const amount = Math.floor(inputLoanAmount.value);
   inputLoanAmount.value = '';
   if (
     amount > 0 &&
@@ -281,7 +281,7 @@ btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   if (
     inputCloseUsername.value === currAccount.username &&
-    Number(inputClosePin.value) === currAccount.pin
+    +inputClosePin.value === currAccount.pin
   ) {
     const index = accounts.findIndex(
       acc => acc.username === currAccount.username
