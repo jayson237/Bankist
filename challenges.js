@@ -411,3 +411,61 @@ console.log((2.7).toFixed(0));
 console.log((2.7).toFixed(3));
 console.log((2.345).toFixed(2));
 console.log(+(2.345).toFixed(2));
+
+// Numeric Seperator
+const diameter = 287_460_000_000;
+console.log(diameter);
+
+const price = 345_99;
+console.log(price);
+
+// BigInt
+console.log(2 ** 53 - 1);
+console.log(Number.MAX_SAFE_INTEGER);
+console.log(2 ** 53 + 1); // UNSAFE
+console.log(2 ** 53 + 0); // UNSAFE
+
+console.log(98749817287368327687416378648716n);
+console.log(BigInt(98749817287368));
+// console.log(Math.sqrt(16n)); DOESN'T WORK
+
+// Operations
+console.log(10000n + 10000n);
+console.log(10n / 3n); // Division (3n)
+
+// Exception
+console.log(20n > 15);
+console.log(15n === 15);
+console.log(15n == 15);
+console.log(15n == '15');
+console.log(typeof 20n);
+
+// Creating Dates
+const now = new Date();
+console.log(now);
+
+console.log(new Date('Aug 02 2023 10:05:41'));
+console.log(new Date('July 23, 2004'));
+console.log(new Date('2019-11-01T13:15:33.035Z'));
+console.log(new Date(2023, 9, 5, 12)); // The month (9) is zero-based and therfore is October
+console.log(new Date(2023, 8, 23, 13, 12, 11));
+
+console.log(new Date(0));
+console.log(new Date(3 * 24 * 60 * 60 * 1000));
+
+// Working with dates
+const future = new Date(2037, 10, 19, 15, 23);
+console.log(future);
+console.log(future.getFullYear());
+console.log(future.getMonth());
+console.log(future.getDate());
+console.log(future.getDay());
+console.log(future.getTime());
+console.log(future.getHours());
+console.log(future.getMinutes());
+console.log(future.getSeconds());
+console.log(future.toISOString());
+
+console.log(Date.now());
+future.setFullYear(2040);
+console.log(future);
