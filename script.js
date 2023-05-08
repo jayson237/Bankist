@@ -9,7 +9,7 @@ const account1 = {
   ],
   interestRate: 1.2,
   pin: 1234,
-  movementsDates: [
+  movementDates: [
     '2019-11-18T21:31:17.178Z',
     '2019-12-23T07:42:02.383Z',
     '2020-01-28T09:15:04.904Z',
@@ -37,7 +37,7 @@ const account2 = {
   ],
   interestRate: 1.5,
   pin: 4321,
-  movementsDates: [
+  movementDates: [
     '2019-11-01T13:15:33.035Z',
     '2019-11-30T09:48:16.867Z',
     '2019-12-25T06:04:23.907Z',
@@ -53,8 +53,8 @@ const account2 = {
     '2021-03-12T11:55:39.582Z',
     '2021-05-01T07:22:22.319Z',
   ],
-  currency: 'USD',
-  locale: 'en-US',
+  currency: 'EUR',
+  locale: 'en-GB',
 };
 
 const account3 = {
@@ -78,7 +78,10 @@ const account3 = {
 
 const account4 = {
   owner: 'Udin Simatupang',
-  movements: [-200, 800, -300, -20, 50, 400, -460, 200, -200, 340],
+  movements: [
+    -200000, 8000000, -300000, -20000, 50000, 400000, -460000, 20000, -200000,
+    340000,
+  ],
   interestRate: 0.7,
   pin: 1357,
   movementDates: [
@@ -146,17 +149,26 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 // Movement Container
-const movementDate = function (date) {
+const movementDate = function (date, locale) {
   const daysPassedFormula = (date1, date2) =>
     Math.floor(Math.abs((date2 - date1) / (1000 * 60 * 60 * 24)));
   const daysPassed = daysPassedFormula(new Date(), date);
   if (daysPassed === 0) return 'TODAY';
   if (daysPassed === 1) return 'YESTERDAY';
   if (daysPassed <= 7) return `${daysPassed} days ago`;
-  const day = `${date.getDate()}`.padStart(2, 0);
-  const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
+  // const day = `${date.getDate()}`.padStart(2, 0);
+  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  // const year = date.getFullYear();
+  // return `${day}/${month}/${year}`;
+  return new Intl.DateTimeFormat(locale).format(date);
+};
+
+const uniqueCurrency = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+    useGrouping: false,
+  }).format(value);
 };
 
 const displayMovements = function (acc, sort = false) {
@@ -167,14 +179,17 @@ const displayMovements = function (acc, sort = false) {
   movs.forEach(function (mov, i) {
     const transactionType = mov > 0 ? 'deposit' : 'withdrawal';
     const date = new Date(acc.movementDates[i]);
-    const displayDate = movementDate(date);
+    const displayDate = movementDate(date, acc.locale);
+
+    const formattedMov = uniqueCurrency(mov, acc.locale, acc.currency);
+
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${transactionType}">
           ${i + 1} ${transactionType}
         </div>
         <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${mov.toFixed(2)}€</div>
+        <div class="movements__value">${formattedMov}</div>
       </div>
     `;
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -197,16 +212,24 @@ console.log(accounts);
 // Display balance
 const displayBalance = function (acc) {
   acc.balance = acc.movements.reduce((x, y) => x + y, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
+  labelBalance.textContent = uniqueCurrency(
+    acc.balance,
+    acc.locale,
+    acc.currency
+  );
 };
 
 // Display Summary
 const calcDisplaySummary = function (acc) {
   const inc = acc.movements.filter(mov => mov >= 0).reduce((x, y) => x + y, 0);
-  labelSumIn.textContent = `${inc.toFixed(2)}€`;
+  labelSumIn.textContent = uniqueCurrency(inc, acc.locale, acc.currency);
 
   const out = acc.movements.filter(mov => mov < 0).reduce((x, y) => x + y, 0);
-  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
+  labelSumOut.textContent = uniqueCurrency(
+    Math.abs(out),
+    acc.locale,
+    acc.currency
+  );
 
   const interest = acc.movements
     .filter(mov => mov >= 0)
@@ -216,7 +239,11 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((x, y) => x + y, 0);
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumInterest.textContent = uniqueCurrency(
+    interest,
+    acc.locale,
+    acc.currency
+  );
 };
 
 const updateUI = function (acc) {
@@ -248,12 +275,23 @@ btnLogin.addEventListener('click', function (e) {
     updateUI(currAccount);
     // Update time
     const now = new Date();
-    const day = `${now.getDate()}`.padStart(2, 0);
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = now.getFullYear();
-    const hour = `${now.getHours()}`.padStart(2, 0);
-    const min = `${now.getMinutes()}`.padStart(2, 0);
-    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    };
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currAccount.locale,
+      options
+    ).format(now);
+    // const day = `${now.getDate()}`.padStart(2, 0);
+    // const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    // const year = now.getFullYear();
+    // const hour = `${now.getHours()}`.padStart(2, 0);
+    // const min = `${now.getMinutes()}`.padStart(2, 0);
+    // labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
   } else {
     inputLoginPin.value = '';
     inputLoginPin.blur();
