@@ -256,7 +256,36 @@ const updateUI = function (acc) {
 };
 
 // EVENT HANDLERS
-let currAccount;
+let currAccount, timer;
+
+const startLogOutTimer = function () {
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+
+    // In each call, print the remaining time to UI
+    labelTimer.textContent = `${min}:${sec}`;
+
+    // When 0 seconds, stop timer and log out user
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = 'Log in to get started';
+      containerApp.style.opacity = 0;
+    }
+
+    // Decrease 1s
+    time--;
+  };
+
+  // Set time to 5 minutes
+  let time = 300;
+
+  // Call the timer every second
+  tick();
+  const timer = setInterval(tick, 1000);
+
+  return timer;
+};
 
 btnLogin.addEventListener('click', function (e) {
   // Prevent from submitting
@@ -272,7 +301,7 @@ btnLogin.addEventListener('click', function (e) {
     containerApp.style.opacity = 100;
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
-    updateUI(currAccount);
+
     // Update time
     const now = new Date();
     const options = {
@@ -286,6 +315,12 @@ btnLogin.addEventListener('click', function (e) {
       currAccount.locale,
       options
     ).format(now);
+
+    if (timer) clearInterval(timer);
+    timer = startLogOutTimer();
+
+    updateUI(currAccount);
+
     // const day = `${now.getDate()}`.padStart(2, 0);
     // const month = `${now.getMonth() + 1}`.padStart(2, 0);
     // const year = now.getFullYear();
@@ -318,6 +353,8 @@ btnTransfer.addEventListener('click', function (e) {
     currAccount.movementDates.push(new Date().toISOString());
     receiverAcc.movementDates.push(new Date().toISOString());
     updateUI(currAccount);
+    clearInterval(timer);
+    timer = startLogOutTimer();
     alert('Transfer Successful!');
   } else {
     alert('Transfer Unsuccessful :(');
@@ -333,10 +370,14 @@ btnLoan.addEventListener('click', function (e) {
     amount > 0 &&
     currAccount.movements.some(mov => mov >= amount * 0.1 && mov > 0)
   ) {
-    currAccount.movements.push(amount);
-    currAccount.movementDates.push(new Date().toISOString());
-    updateUI(currAccount);
-    alert('Loan request accepted!');
+    setTimeout(function () {
+      currAccount.movements.push(amount);
+      currAccount.movementDates.push(new Date().toISOString());
+      updateUI(currAccount);
+      alert('Loan request accepted!');
+      clearInterval(timer);
+      timer = startLogOutTimer();
+    }, 60000);
   } else {
     alert(
       'You must have at least have a deposit that is larger than 10% of the loan you requested'

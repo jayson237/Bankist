@@ -499,4 +499,20 @@ console.log(
 );
 
 // Timers
-setTimeout(() => console.log('Here is your pizza!'));
+setTimeout(() => console.log('Here is your pizza!'), 3000);
+setTimeout(
+  (ing1, ing2) => console.log(`Here is your pizza with ${ing1} and ${ing2}!`),
+  3000,
+  'pineapple',
+  'cheese'
+);
+console.log('Waiting...');
+
+const ingredients = ['olives', 'spinach'];
+const pizzaTimer = setTimeout(
+  (ing1, ing2) => console.log(`Here is your pizza with ${ing1} and ${ing2}!`),
+  5000,
+  ...ingredients // spread operator
+);
+
+if (ingredients.includes('spinach')) clearTimeout(pizzaTimer);
